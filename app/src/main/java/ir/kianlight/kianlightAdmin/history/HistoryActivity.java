@@ -12,8 +12,12 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,10 +46,12 @@ import java.util.List;
 
 import ir.kianlight.kianlightAdmin.MainActivity;
 import ir.kianlight.kianlightAdmin.R;
+import ir.kianlight.kianlightAdmin.customer.Customer;
 
 
 public class HistoryActivity extends AppCompatActivity {
     private DecimalFormat formatter = new DecimalFormat("###,###,###,###");
+    private EditText search_editText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +59,10 @@ public class HistoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_history);
         getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
-        ConstraintLayout BasketLayout = findViewById(R.id.Basket_layout);
-        ProgressBar progressBar = findViewById(R.id.progressBar);
-        RecyclerView recyclerViewlist = findViewById(R.id.RecyclerView);
-        TextView emptyText = findViewById(R.id.emptyText);
+        final ConstraintLayout BasketLayout = findViewById(R.id.Basket_layout);
+        final ProgressBar progressBar = findViewById(R.id.progressBar);
+        final RecyclerView recyclerViewlist = findViewById(R.id.RecyclerView);
+        final TextView emptyText = findViewById(R.id.emptyText);
         Button excelBtn = findViewById(R.id.excelBtn);
         emptyText.setVisibility(View.GONE);
 
@@ -66,7 +72,7 @@ public class HistoryActivity extends AppCompatActivity {
 //
 //        if (token.Ok(getActivity())) {
         getHistoryBasket historyBasket = new getHistoryBasket();
-        historyBasket.get_Items(HistoryActivity.this, progressBar, recyclerViewlist, emptyText, BasketLayout);
+        historyBasket.get_Items(HistoryActivity.this,"", progressBar, recyclerViewlist, emptyText, BasketLayout);
 
         getHistoryExcelBasket historyExcelBasket = new getHistoryExcelBasket();
         historyExcelBasket.get_Items(HistoryActivity.this, progressBar, recyclerViewlist, emptyText, BasketLayout, excelBtn);
@@ -76,7 +82,61 @@ public class HistoryActivity extends AppCompatActivity {
 //        }
 
         RunPermissionExcel();
+
+        search_editText = (EditText) findViewById(R.id.editText_search3);
+        search_editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+//                    if (search_editText.getText().toString().isEmpty()) {
+//                        Toast.makeText(HistoryActivity.this, "لطفا متن مورد نظر خود را وارد کنید", Toast.LENGTH_SHORT).show();
+//
+//                    } else if (search_editText.getText().toString().length() < 3) {
+//                        Toast.makeText(HistoryActivity.this, "لطفا طول کلمه مورد نظر  3 حرف یا بیشتر باشد", Toast.LENGTH_SHORT).show();
+//                    } else {
+                        getHistoryBasket historyBasket = new getHistoryBasket();
+                        historyBasket.get_Items(HistoryActivity.this,search_editText.getText().toString(), progressBar, recyclerViewlist, emptyText, BasketLayout);
+                      // CheckNet();
+//                    }
+                }
+                return false;
+            }
+        });
+        search_editText.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int DRAWABLE_LEFT = 0;
+                final int DRAWABLE_TOP = 1;
+                final int DRAWABLE_RIGHT = 2;
+                final int DRAWABLE_BOTTOM = 3;
+
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (event.getRawX() <= (search_editText.getCompoundDrawables()[DRAWABLE_LEFT].getBounds().width())) {
+                        // your action here
+
+//                        if (search_editText.getText().toString().isEmpty()) {
+//                            Toast.makeText(HistoryActivity.this, "لطفا متن مورد نظر خود را وارد کنید", Toast.LENGTH_SHORT).show();
+//
+//                        } else if (search_editText.getText().toString().length() < 3) {
+//                            Toast.makeText(HistoryActivity.this, "لطفا طول کلمه مورد نظر  3 حرف یا بیشتر باشد", Toast.LENGTH_SHORT).show();
+//                        } else {
+//                            CheckNet();
+                            // get_banners("search", search_editText.getText().toString(), "", "", "", "", "", "", "", "", "", "", "", "", "", "");
+                            //datavolly.search(NameList.this, "activity_category", search_editText.getText().toString(), recyclerView, tryagain_txt, tryagain_btn, progressBarOne);
+                            getHistoryBasket historyBasket = new getHistoryBasket();
+                            historyBasket.get_Items(HistoryActivity.this,search_editText.getText().toString(), progressBar, recyclerViewlist, emptyText, BasketLayout);
+
+//                        }
+
+                        return false;
+                    }
+                }
+                return false;
+            }
+        });
     }
+
 
     public void setHiddenLayout(Context context) {
         ConstraintLayout BasketLayout = ((Activity) context).findViewById(R.id.Basket_layout);

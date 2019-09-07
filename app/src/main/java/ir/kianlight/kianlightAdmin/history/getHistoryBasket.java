@@ -55,7 +55,7 @@ public class getHistoryBasket {
 
     private DecimalFormat formatter = new DecimalFormat("###,###,###,###");
 
-    public void get_Items(final Context context, final ProgressBar ProgressBar, final RecyclerView recyclerViewlist, final TextView emptyText, final ConstraintLayout BasketLayout) {
+    public void get_Items(final Context context,final String Search, final ProgressBar ProgressBar, final RecyclerView recyclerViewlist, final TextView emptyText, final ConstraintLayout BasketLayout) {
 
         final SharedPreferences sp = context.getSharedPreferences("Token", 0);
         String urlJsonArray = "http://www.kianlight.ir/kianlight/admin/" + "getHistoryBasket.php";
@@ -118,13 +118,13 @@ public class getHistoryBasket {
 
 
                             //set empty message in basket
-                            HistoryActivity Basket = new HistoryActivity();
+//                            HistoryActivity Basket = new HistoryActivity();
                             if (array.length() == 0) {
                                 emptyText.setVisibility(View.VISIBLE);
-                                Basket.setHiddenLayout(context);
+//                                Basket.setHiddenLayout(context);
                             } else {
                                 emptyText.setVisibility(View.GONE);
-                                Basket.setShowLayout(context);
+//                                Basket.setShowLayout(context);
                             }
 
 
@@ -180,6 +180,7 @@ public class getHistoryBasket {
             protected Map<String, String> getParams() {
                 Map<String, String> MyData = new HashMap<>();
                 MyData.put("Api_token", sp.getString("token", "nothing"));
+                MyData.put("Search", Search);
 
                 return MyData;
             }
